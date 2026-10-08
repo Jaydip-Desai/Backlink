@@ -1,0 +1,19 @@
+{
+  "name": "backlink-exchange-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LinkBridge - Backlink & Link Exchange Management System (React + Spring Boot + PostgreSQL)",
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm --workspace client run dev",
+    "build": "npm --workspace client run build",
+    "test:api": "node tests/test_api_compatibility.mjs",
+    "test:e2e": "node tests/e2e_vite_proxy.mjs",
+    "test:security": "node tests/test_security_matrix.mjs"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
