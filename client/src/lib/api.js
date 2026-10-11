@@ -7,7 +7,8 @@ let navigateTo = null;
 // Backend URL configured in Render.
 // Use an empty string for local development with a proxy.
 const API_BASE_URL = (
-  import.meta.env.VITE_API_URL || ''
+  import.meta.env.VITE_API_URL ||
+  'https://backlink-backend-b3hz.onrender.com'
 ).replace(/\/+$/, '');
 
 export function setCsrf(t) {
