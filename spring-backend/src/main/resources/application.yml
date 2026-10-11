@@ -1,11 +1,17 @@
+server:
+  port: ${PORT:8080}
+  address: 0.0.0.0
+
 spring:
   application:
     name: linkbridge
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/linkbridge_db}
     username: ${SPRING_DATASOURCE_USERNAME:linkbridge}
     password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -13,10 +19,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   flyway:
     enabled: true
     baseline-on-migrate: true
 
 jwt:
-  secret: 4b2a8d3e9f1c7a5b6d4e8f2c0a9b3d7e5f1a4c8b2d6e9f0a3c7b1e5d9f4a8c2
-  expirationMs: 604800000 # 7 days
+  secret: ${JWT_SECRET}
+  expirationMs: 604800000
