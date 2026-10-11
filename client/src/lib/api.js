@@ -1,4 +1,3 @@
-```javascript
 let csrfToken = '';
 let setAuthUser = null;
 let notify = null;
