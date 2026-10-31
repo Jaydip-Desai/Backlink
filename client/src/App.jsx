@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx';
 import { ProjectProvider } from './lib/ProjectContext.jsx';
 import Layout from './lib/Layout.jsx';
@@ -212,6 +214,18 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
           <CookieBanner />
+          <ToastContainer
+            position="top-right"
+            autoClose={3500}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover
+            theme="light"
+          />
         </ProjectProvider>
       </AuthProvider>
     </BrowserRouter>

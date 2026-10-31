@@ -7,7 +7,7 @@ export default defineConfig({
     dedupe: ['react', 'react-dom', 'react-router-dom'],
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'lucide-react', 'recharts', 'sweetalert2'],
+    include: ['react', 'react-dom', 'react-router-dom', 'lucide-react', 'recharts', 'sweetalert2', 'react-toastify'],
   },
   server: {
     port: 5173,

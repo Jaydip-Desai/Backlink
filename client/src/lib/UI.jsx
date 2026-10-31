@@ -740,41 +740,21 @@ export function Empty({
 }
 
 /* ============================================================
-   TOAST SYSTEM
+   TOAST SYSTEM (DELEGATED TO REACT-TOASTIFY)
    ============================================================ */
-export function Toast({ toasts, onDismiss }) {
-  return (
-    <div className="toast-container">
-      {toasts.map(t => (
-        <div key={t.id} className={`toast toast-${t.type || 'info'}`}>
-          {t.type === 'success' ? (
-            <CheckCircle2 size={18} />
-          ) : t.type === 'error' ? (
-            <AlertTriangle size={18} />
-          ) : (
-            <Info size={18} />
-          )}
-          <span style={{ flex: 1 }}>{t.message}</span>
-          <button
-            onClick={() => onDismiss(t.id)}
-            style={{ color: '#fff', border: 'none', background: 'none', cursor: 'pointer', padding: 4 }}
-          >
-            <X size={15} />
-          </button>
-        </div>
-      ))}
-    </div>
-  );
+export function Toast() {
+  return null;
 }
 
 export function useToast() {
-  const [toasts, setToasts] = useState([]);
+  const [toasts] = useState([]);
   const add = useCallback((message, type = 'info') => {
-    const id = Date.now() + Math.random();
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+    const fn = notify[type] || notify.info;
+    fn(message);
   }, []);
-  const dismiss = useCallback(id => setToasts(prev => prev.filter(t => t.id !== id)), []);
+  const dismiss = useCallback(() => {
+    notify.close();
+  }, []);
   return { toasts, add, dismiss };
 }
 
