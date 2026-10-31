@@ -160,16 +160,46 @@ export function StatusBadge({ status, map }) {
 }
 
 /* ============================================================
+   USER NAME & ROLE HELPERS
+   ============================================================ */
+export function formatUserName(name, email) {
+  if (!name) {
+    if (email && String(email).includes('@')) {
+      return String(email).split('@')[0];
+    }
+    return 'User';
+  }
+  const cleaned = String(name)
+    .trim()
+    .split(/\s+/)
+    .filter(part => !part.includes('@'))
+    .join(' ')
+    .trim();
+  if (cleaned) return cleaned;
+  if (email && String(email).includes('@')) {
+    return String(email).split('@')[0];
+  }
+  return String(name).split('@')[0].trim() || 'User';
+}
+
+export function formatRoleLabel(role) {
+  if (!role) return 'Member';
+  return String(role)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+/* ============================================================
    AVATAR
    ============================================================ */
 export function Avatar({ name, color, size = 32 }) {
-  const initials = (name || '?')
-    .split(' ')
-    .filter(Boolean)
-    .map(w => w[0])
-    .join('')
-    .slice(0, 2)
-    .toUpperCase();
+  const cleanName = formatUserName(name);
+  const words = (cleanName || '?').split(' ').filter(Boolean);
+  const initials = (
+    words.length >= 2
+      ? words[0][0] + words[words.length - 1][0]
+      : (words[0] || '?').slice(0, 2)
+  ).toUpperCase();
   return (
     <div
       className="avatar"
@@ -363,7 +393,7 @@ export function Dropdown({ trigger, children, align = 'right', className = '' })
 /* ============================================================
    PREMIUM PROFILE MENU POPOVER (EXACT USER SPECIFICATION)
    ============================================================ */
-export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
+export function ProfileMenu({ user, onLogout }) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef(null);
   const navigate = useNavigate();
@@ -393,11 +423,16 @@ export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
 
   const roleColors = {
     admin: { bg: 'rgba(99, 91, 255, 0.15)', text: '#635bff' },
+    business_owner: { bg: 'rgba(99, 91, 255, 0.15)', text: '#635bff' },
+    agency_owner: { bg: 'rgba(99, 91, 255, 0.15)', text: '#635bff' },
+    seo_professional: { bg: 'rgba(37, 99, 235, 0.15)', text: '#2563eb' },
     manager: { bg: 'rgba(37, 99, 235, 0.15)', text: '#2563eb' },
     executive: { bg: 'rgba(22, 163, 74, 0.15)', text: '#16a34a' },
     viewer: { bg: 'rgba(100, 116, 139, 0.15)', text: '#64748b' },
   };
-  const roleStyle = roleColors[user?.role?.toLowerCase()] || roleColors.viewer;
+  const roleStyle = roleColors[user?.role?.toLowerCase()] || roleColors.business_owner;
+  const displayName = formatUserName(user?.name, user?.email);
+  const displayRole = formatRoleLabel(user?.role);
 
   return (
     <div className="dropdown" ref={containerRef}>
@@ -408,18 +443,9 @@ export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
         aria-label="User Profile Menu"
         aria-expanded={open}
       >
-        <Avatar name={user?.name} color={user?.avatar_color} size={32} />
-        <span className="profile-user-name" style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--fg)' }}>
-          {user?.name}
-        </span>
-        <span className="profile-role-badge">
-          <Badge
-            color={roleStyle.text}
-            bg={roleStyle.bg}
-            size="sm"
-          >
-            {user?.role}
-          </Badge>
+        <Avatar name={displayName} color={user?.avatar_color} size={32} />
+        <span className="profile-user-name" style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--fg)', whiteSpace: 'nowrap' }}>
+          {displayName}
         </span>
         <ChevronDown size={15} className="chevron-icon" />
       </button>
@@ -433,9 +459,9 @@ export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
             onClick={() => goTo('/settings?tab=profile')}
             title="Open Account Settings"
           >
-            <Avatar name={user?.name} color={user?.avatar_color} size={42} />
+            <Avatar name={displayName} color={user?.avatar_color} size={42} />
             <div style={{ flex: 1, overflow: 'hidden' }}>
-              <div className="profile-popover-name">{user?.name}</div>
+              <div className="profile-popover-name">{displayName}</div>
               <div className="profile-popover-email">{user?.email}</div>
               <div style={{ marginTop: 6 }}>
                 <span
@@ -451,7 +477,7 @@ export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
                     display: 'inline-block',
                   }}
                 >
-                  {user?.role}
+                  {displayRole}
                 </span>
               </div>
             </div>
@@ -482,28 +508,6 @@ export function ProfileMenu({ user, onLogout, isDark, onToggleTheme }) {
             >
               <Shield size={16} color="var(--success)" />
               <span>Security</span>
-            </button>
-          </div>
-
-          <div className="dropdown-divider" />
-
-          {/* Appearance Toggle Item */}
-          <div className="profile-popover-menu-section">
-            <button
-              className="dropdown-item"
-              onClick={e => {
-                e.stopPropagation();
-                onToggleTheme();
-              }}
-              style={{ justifyContent: 'space-between' }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                {isDark ? <Moon size={16} color="var(--purple)" /> : <Sun size={16} color="var(--warning)" />}
-                <span>Appearance</span>
-              </div>
-              <span style={{ fontSize: 12, color: 'var(--fg4)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                {isDark ? 'Dark' : 'Light'} <ChevronRight size={13} />
-              </span>
             </button>
           </div>
 
@@ -890,7 +894,7 @@ export function DataTable({
                 </td>
               )}
               {columns.map(c => (
-                <td key={c.key} style={{ ...c.style, maxWidth: c.maxWidth }}>
+                <td key={c.key} style={{ ...c.style, width: c.width, maxWidth: c.maxWidth || 260 }}>
                   {c.render ? c.render(row[c.key], row) : row[c.key]}
                 </td>
               ))}

@@ -58,6 +58,23 @@ public class AuthController {
         return UUID.randomUUID().toString().replace("-", "") + System.currentTimeMillis();
     }
 
+    private String cleanDisplayName(String rawName, String email) {
+        if (rawName != null && !rawName.isBlank()) {
+            StringBuilder sb = new StringBuilder();
+            for (String part : rawName.trim().split("\\s+")) {
+                if (!part.contains("@")) {
+                    if (sb.length() > 0) sb.append(" ");
+                    sb.append(part);
+                }
+            }
+            if (sb.length() > 0) return sb.toString();
+        }
+        if (email != null && email.contains("@")) {
+            return email.substring(0, email.indexOf('@'));
+        }
+        return rawName != null ? rawName.trim() : "User";
+    }
+
     private void setCookie(HttpServletResponse response, String name, String value, int maxAge, boolean httpOnly) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
@@ -214,7 +231,7 @@ public class AuthController {
 
         Map<String, Object> userData = new LinkedHashMap<>();
         userData.put("id", user.getId());
-        userData.put("name", user.getName());
+        userData.put("name", cleanDisplayName(user.getName(), user.getEmail()));
         userData.put("email", user.getEmail());
         userData.put("role", user.getRole());
         userData.put("title", user.getTitle());
@@ -259,7 +276,7 @@ public class AuthController {
 
         Map<String, Object> userData = new LinkedHashMap<>();
         userData.put("id", user.getId());
-        userData.put("name", user.getName());
+        userData.put("name", cleanDisplayName(user.getName(), user.getEmail()));
         userData.put("email", user.getEmail());
         userData.put("role", user.getRole());
         userData.put("title", user.getTitle());
@@ -406,9 +423,13 @@ public class AuthController {
         String name = (String) body.get("name");
         String firstName = (String) body.get("firstName");
         String lastName = (String) body.get("lastName");
+        if (lastName != null && lastName.contains("@")) {
+            lastName = "";
+        }
         if ((name == null || name.trim().isEmpty()) && (firstName != null || lastName != null)) {
             name = ((firstName != null ? firstName.trim() : "") + " " + (lastName != null ? lastName.trim() : "")).trim();
         }
+        name = cleanDisplayName(name, (String) body.get("email"));
 
         String email = (String) body.get("email");
         String password = (String) body.get("password");
@@ -436,9 +457,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("error", "Please enter a valid work email address."));
         }
 
-        // 4. Password validation (min 12 chars, upper, lower, digit, special character)
-        if (password == null || password.length() < 12) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 12 characters long."));
+        // 4. Password validation (min 8 chars, upper, lower, digit, special character)
+        if (password == null || password.length() < 8) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Password must be at least 8 characters long."));
         }
         boolean hasUpper = password.chars().anyMatch(Character::isUpperCase);
         boolean hasLower = password.chars().anyMatch(Character::isLowerCase);
@@ -666,7 +687,7 @@ public class AuthController {
 
         Map<String, Object> userData = new LinkedHashMap<>();
         userData.put("id", user.getId());
-        userData.put("name", user.getName());
+        userData.put("name", cleanDisplayName(user.getName(), user.getEmail()));
         userData.put("email", user.getEmail());
         userData.put("role", user.getRole());
         userData.put("title", user.getTitle());

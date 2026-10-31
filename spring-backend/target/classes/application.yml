@@ -2,7 +2,7 @@ spring:
   application:
     name: linkbridge
   datasource:
-    url: jdbc:postgresql://localhost:5432/linkbridge_db
+    url: jdbc:postgresql://localhost:5436/linkbridge_db
     username: linkbridge
     password: password
     driver-class-name: org.postgresql.Driver

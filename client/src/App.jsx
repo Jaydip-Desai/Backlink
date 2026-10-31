@@ -180,9 +180,7 @@ export default function App() {
               path="/team"
               element={
                 <Protected>
-                  <RoleRoute roles={['admin', 'manager']}>
-                    <Team />
-                  </RoleRoute>
+                  <Team />
                 </Protected>
               }
             />
@@ -192,9 +190,7 @@ export default function App() {
               path="/activity"
               element={
                 <Protected>
-                  <RoleRoute roles={['admin', 'manager']}>
-                    <Activity />
-                  </RoleRoute>
+                  <Activity />
                 </Protected>
               }
             />

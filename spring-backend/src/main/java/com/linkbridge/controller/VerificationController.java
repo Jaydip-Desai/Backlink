@@ -270,6 +270,7 @@ public class VerificationController {
 
         Map<String, Object> res = new LinkedHashMap<>();
         res.put("backlinks", rows);
+        res.put("lost", rows);
         res.put("total", total);
         res.put("page", page);
         res.put("limit", limit);

@@ -109,11 +109,11 @@ export default function LandingPage() {
         {/* Brand Logo */}
         <Link
           to="/"
-          style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: 'inherit' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', color: '#0f172a' }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <Logo size={34} animated={true} />
-          <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--fg, #111827)' }}>
+          <span style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.02em', color: '#0f172a' }}>
             LinkPilot
           </span>
         </Link>
@@ -126,17 +126,17 @@ export default function LandingPage() {
             alignItems: 'center',
             gap: 28,
             fontSize: 14,
-            fontWeight: 500,
-            color: 'var(--fg2, #334155)',
+            fontWeight: 600,
+            color: '#334155',
           }}
         >
-          <a href="#how-it-works" style={{ textDecoration: 'none', color: 'inherit' }}>Platform</a>
-          <a href="#intelligence" style={{ textDecoration: 'none', color: 'inherit' }}>Backlink Intelligence</a>
-          <a href="#competitors" style={{ textDecoration: 'none', color: 'inherit' }}>Competitor Analysis</a>
-          <a href="#outreach" style={{ textDecoration: 'none', color: 'inherit' }}>Link Building</a>
-          <a href="#reports" style={{ textDecoration: 'none', color: 'inherit' }}>Reports</a>
-          <a href="#security" style={{ textDecoration: 'none', color: 'inherit' }}>Security</a>
-          <a href="#faq" style={{ textDecoration: 'none', color: 'inherit' }}>FAQ</a>
+          <a href="#how-it-works" style={{ textDecoration: 'none', color: '#334155' }}>Platform</a>
+          <a href="#intelligence" style={{ textDecoration: 'none', color: '#334155' }}>Backlink Intelligence</a>
+          <a href="#competitors" style={{ textDecoration: 'none', color: '#334155' }}>Competitor Analysis</a>
+          <a href="#outreach" style={{ textDecoration: 'none', color: '#334155' }}>Link Building</a>
+          <a href="#reports" style={{ textDecoration: 'none', color: '#334155' }}>Reports</a>
+          <a href="#security" style={{ textDecoration: 'none', color: '#334155' }}>Security</a>
+          <a href="#faq" style={{ textDecoration: 'none', color: '#334155' }}>FAQ</a>
         </nav>
 
         {/* Desktop Actions */}
@@ -255,7 +255,8 @@ export default function LandingPage() {
       <section
         style={{
           padding: '72px 24px 60px',
-          maxWidth: 1200,
+          maxWidth: 1440,
+          width: '100%',
           margin: '0 auto',
           textAlign: 'center',
           display: 'flex',
@@ -322,7 +323,7 @@ export default function LandingPage() {
         <div
           style={{
             width: '100%',
-            maxWidth: 1040,
+            maxWidth: 1240,
             background: 'var(--bg2, #ffffff)',
             border: '1px solid var(--border, #e2e8f0)',
             borderRadius: 24,
@@ -474,7 +475,7 @@ export default function LandingPage() {
           3. HOW IT WORKS (WORKFLOW SECTION)
          ========================================================================= */}
       <section id="how-it-works" style={{ padding: '72px 24px', background: 'var(--bg2, #ffffff)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 54 }}>
             <Badge color="#635bff" bg="rgba(99, 91, 255, 0.08)">End-to-End Workflow</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -531,7 +532,7 @@ export default function LandingPage() {
           borderTop: '1px solid var(--border, #e2e8f0)',
         }}
       >
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <Badge color="#10b981" bg="var(--green-bg, #ecfdf5)">SEO Intelligence Engine</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -728,7 +729,7 @@ export default function LandingPage() {
           5. COMPETITOR INTELLIGENCE SECTION (#competitors)
          ========================================================================= */}
       <section id="competitors" style={{ padding: '80px 24px', background: 'var(--bg2, #ffffff)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <Badge color="#f59e0b" bg="var(--amber-bg, #fffbeb)">Competitor Gap Analysis</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -780,7 +781,7 @@ export default function LandingPage() {
           6. LINK-BUILDING & OUTREACH CRM SECTION (#outreach)
          ========================================================================= */}
       <section id="outreach" style={{ padding: '80px 24px', background: 'var(--bg, #f8fafc)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <Badge color="#ec4899" bg="rgba(236, 72, 153, 0.08)">Outreach CRM</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -825,7 +826,7 @@ export default function LandingPage() {
           7. REPORTING SECTION (#reports)
          ========================================================================= */}
       <section id="reports" style={{ padding: '80px 24px', background: 'var(--bg2, #ffffff)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto', textAlign: 'center' }}>
           <Badge color="#635bff" bg="rgba(99, 91, 255, 0.08)">Executive Reporting</Badge>
           <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
             White-Label Client Reports & Scheduled Exports
@@ -857,7 +858,7 @@ export default function LandingPage() {
           8. SECURITY & DATA GOVERNANCE SECTION (#security)
          ========================================================================= */}
       <section id="security" style={{ padding: '80px 24px', background: 'var(--bg, #f8fafc)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1440, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
             <Badge color="#10b981" bg="var(--green-bg, #ecfdf5)">Enterprise Governance</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -900,7 +901,7 @@ export default function LandingPage() {
           9. FREQUENTLY ASKED QUESTIONS (FAQ) (#faq)
          ========================================================================= */}
       <section id="faq" style={{ padding: '80px 24px', background: 'var(--bg2, #ffffff)', borderTop: '1px solid var(--border, #e2e8f0)' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
+        <div style={{ maxWidth: 1100, width: '100%', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 44 }}>
             <Badge color="#635bff" bg="rgba(99, 91, 255, 0.08)">Common Questions</Badge>
             <h2 style={{ fontSize: 32, fontWeight: 800, margin: '12px 0 8px', letterSpacing: '-0.02em' }}>
@@ -1067,7 +1068,8 @@ export default function LandingPage() {
         <div
           className="landing-footer-bottom"
           style={{
-            maxWidth: 1200,
+            maxWidth: 1440,
+          width: '100%',
             margin: '0 auto',
             paddingTop: 24,
             borderTop: '1px solid var(--border, #e2e8f0)',

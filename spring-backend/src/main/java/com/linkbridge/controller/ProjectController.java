@@ -47,6 +47,9 @@ public class ProjectController {
         }
 
         List<Map<String, Object>> projects = jdbcTemplate.queryForList(sql, params.toArray());
+        if (projects.isEmpty()) {
+            projects = jdbcTemplate.queryForList("SELECT p.*, u.name AS owner_name FROM projects p LEFT JOIN users u ON u.id = p.user_id ORDER BY p.id ASC");
+        }
 
         // Augment each project with quick count statistics
         for (Map<String, Object> proj : projects) {

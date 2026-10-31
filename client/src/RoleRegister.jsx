@@ -123,8 +123,8 @@ export default function RoleRegister() {
       notify.warning('Name Required', 'Please enter both your first and last name.');
       return;
     }
-    if (password.length < 12) {
-      notify.warning('Password Too Short', 'Password must be at least 12 characters.');
+    if (password.length < 8) {
+      notify.warning('Password Too Short', 'Password must be at least 8 characters.');
       return;
     }
     const hasUpper = /[A-Z]/.test(password);
@@ -169,11 +169,15 @@ export default function RoleRegister() {
       if (intent === 'agency_owner') accountTypeParam = 'agency_owner';
       else if (intent === 'seo_professional' || intent === 'outreach_manager') accountTypeParam = 'seo_professional';
 
+      const cleanFirst = firstName.trim().split(/\s+/).filter(p => !p.includes('@')).join(' ');
+      const cleanLast = lastName.trim().split(/\s+/).filter(p => !p.includes('@')).join(' ');
+      const fullName = [cleanFirst, cleanLast].filter(Boolean).join(' ') || cleanFirst || firstName.trim().split('@')[0];
+
       const payload = {
         email: email.trim().toLowerCase(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        name: `${firstName.trim()} ${lastName.trim()}`,
+        firstName: cleanFirst || firstName.trim().split('@')[0],
+        lastName: cleanLast,
+        name: fullName,
         password,
         confirmPassword,
         terms: true,
@@ -204,7 +208,7 @@ export default function RoleRegister() {
   // Password Strength Calculation
   const getPasswordStrength = () => {
     let score = 0;
-    if (password.length >= 12) score += 25;
+    if (password.length >= 8) score += 25;
     if (/[A-Z]/.test(password)) score += 25;
     if (/[0-9]/.test(password)) score += 25;
     if (/[!@#$%^&*()_+\-=[\]{}|;':",./<>?`~]/.test(password)) score += 25;
@@ -456,12 +460,15 @@ export default function RoleRegister() {
             </div>
 
             <form onSubmit={handleContinueToOnboarding} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <input type="email" name="username" autoComplete="username" value={email} readOnly style={{ display: 'none' }} tabIndex={-1} />
               {/* Name Fields */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 500, marginBottom: 6, color: 'var(--fg, #111827)' }}>First Name *</label>
                   <input
                     type="text"
+                    name="firstName"
+                    autoComplete="given-name"
                     required
                     value={firstName}
                     onChange={e => setFirstName(e.target.value)}
@@ -483,6 +490,8 @@ export default function RoleRegister() {
                   <label style={{ display: 'block', fontSize: 12.5, fontWeight: 500, marginBottom: 6, color: 'var(--fg, #111827)' }}>Last Name *</label>
                   <input
                     type="text"
+                    name="lastName"
+                    autoComplete="family-name"
                     required
                     value={lastName}
                     onChange={e => setLastName(e.target.value)}
@@ -504,14 +513,17 @@ export default function RoleRegister() {
 
               {/* Password */}
               <div>
-                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 500, marginBottom: 6, color: 'var(--fg, #111827)' }}>Password (min 12 chars) *</label>
+                <label style={{ display: 'block', fontSize: 12.5, fontWeight: 500, marginBottom: 6, color: 'var(--fg, #111827)' }}>Password (min 8 chars) *</label>
                 <div style={{ position: 'relative' }}>
                   <input
                     type={showPassword ? 'text' : 'password'}
+                    name="newPassword"
+                    autoComplete="new-password"
                     required
+                    minLength={8}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    placeholder="At least 12 characters"
+                    placeholder="At least 8 characters"
                     style={{
                       width: '100%',
                       boxSizing: 'border-box',

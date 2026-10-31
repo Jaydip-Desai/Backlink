@@ -16,15 +16,21 @@ export function ProjectProvider({ children }) {
     try {
       const data = await apiGet('/projects').catch(() => []);
       if (Array.isArray(data) && data.length > 0) {
-        setProjects(data);
+        const cleaned = data
+          .map(p => ({
+            ...p,
+            name: String(p.name || 'LinkPilot Core').replace(/\s+HQ\b/gi, '').trim(),
+          }))
+          .sort((a, b) => Number(a.id || 0) - Number(b.id || 0));
+        setProjects(cleaned);
         const savedId = localStorage.getItem('linkpilot_active_project_id');
-        const found = data.find(p => String(p.id) === savedId);
-        setActiveProject(found || data[0]);
+        const found = cleaned.find(p => String(p.id) === savedId);
+        setActiveProject(found || cleaned[0]);
       } else {
         // Fallback default project
         const defaultProj = {
           id: 1,
-          name: 'LinkPilot Core HQ',
+          name: 'LinkPilot Core',
           domain: 'linkpilot.io',
           website_url: 'https://linkpilot.io',
           total_backlinks: 3420,

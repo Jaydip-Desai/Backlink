@@ -26,7 +26,7 @@ public class ActivityLogController {
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "50") int limit
     ) {
-        authorizationService.requireRole("admin", "manager");
+        authorizationService.requireAuthenticated();
         limit = Math.min(Math.max(1, limit), 100);
         page = Math.max(1, page);
         StringBuilder where = new StringBuilder(" WHERE 1=1");

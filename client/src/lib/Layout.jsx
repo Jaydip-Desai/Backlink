@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from './AuthContext.jsx';
 import { apiPost, apiGet, setNavigate } from './api.js';
-import { Badge, Avatar, Dropdown, Modal, Button, ProfileMenu, Logo } from './UI.jsx';
+import { Badge, Avatar, Dropdown, Modal, Button, ProfileMenu, Logo, formatUserName, formatRoleLabel } from './UI.jsx';
 import { useProject } from './ProjectContext.jsx';
 import {
   LayoutDashboard,
@@ -123,9 +123,13 @@ export default function Layout({ children }) {
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  const [isDark, setIsDark] = useState(document.documentElement.getAttribute('data-theme') === 'dark');
 
   const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -182,12 +186,6 @@ export default function Layout({ children }) {
     }, 250);
     return () => clearTimeout(t);
   }, [searchQ, searchOpen]);
-
-  const toggleTheme = () => {
-    const next = isDark ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    setIsDark(!isDark);
-  };
 
   const handleLogout = async () => {
     await apiPost('/auth/logout').catch(() => {});
@@ -360,7 +358,7 @@ export default function Layout({ children }) {
         </div>
 
         {/* Navigation List */}
-        <nav style={{ paddingBottom: 24, flex: 1 }}>
+        <nav className="sidebar-nav" style={{ paddingBottom: 24, flex: 1 }}>
           {filteredNav.map((n, i) =>
             n.section ? (
               <div key={i} className="nav-section">
@@ -405,7 +403,7 @@ export default function Layout({ children }) {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Avatar name={user?.name} color={user?.avatar_color} size={34} />
+            <Avatar name={formatUserName(user?.name, user?.email)} color={user?.avatar_color} size={34} />
             <div style={{ overflow: 'hidden', flex: 1 }}>
               <div
                 style={{
@@ -417,7 +415,7 @@ export default function Layout({ children }) {
                   fontSize: 13,
                 }}
               >
-                {user?.name}
+                {formatUserName(user?.name, user?.email)}
               </div>
               <div
                 style={{
@@ -428,7 +426,7 @@ export default function Layout({ children }) {
                   fontWeight: 600,
                 }}
               >
-                {user?.role}
+                {formatRoleLabel(user?.role)}
               </div>
             </div>
             <button
@@ -460,81 +458,6 @@ export default function Layout({ children }) {
               <Menu size={22} />
             </button>
 
-            {/* Active Project Switcher */}
-            <Dropdown
-              align="left"
-              trigger={({ open }) => (
-                <button
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '5px 12px',
-                    borderRadius: 'var(--radius-pill)',
-                    background: 'var(--bg3)',
-                    border: '1px solid var(--border)',
-                    cursor: 'pointer',
-                    fontSize: 12.5,
-                    fontWeight: 600,
-                    color: 'var(--fg)',
-                  }}
-                  title="Switch Active LinkPilot Project"
-                >
-                  <Briefcase size={13} color="var(--primary)" />
-                  <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {activeProject?.name || 'LinkPilot Core'}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 700,
-                      background: 'var(--primary-bg)',
-                      color: 'var(--primary)',
-                      padding: '1px 6px',
-                      borderRadius: 4,
-                    }}
-                  >
-                    {activeProject?.domain || 'linkpilot.io'}
-                  </span>
-                  <ChevronDown size={13} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s', color: 'var(--fg4)' }} />
-                </button>
-              )}
-            >
-              <div style={{ padding: '8px 14px', borderBottom: '1px solid var(--border)', fontSize: 11, fontWeight: 700, color: 'var(--fg4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Select Active Project
-              </div>
-              <div style={{ maxHeight: 220, overflowY: 'auto' }}>
-                {projects.map(p => (
-                  <button
-                    key={p.id}
-                    className="dropdown-item"
-                    onClick={() => switchProject(p)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 8,
-                      fontWeight: activeProject?.id === p.id ? 700 : 500,
-                      color: activeProject?.id === p.id ? 'var(--primary)' : 'var(--fg)',
-                      background: activeProject?.id === p.id ? 'var(--primary-bg)' : 'transparent',
-                    }}
-                  >
-                    <span style={{ width: 7, height: 7, borderRadius: '50%', background: activeProject?.id === p.id ? 'var(--success)' : 'var(--fg4)' }} />
-                    <span style={{ flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</span>
-                    <span style={{ fontSize: 11, color: 'var(--fg4)' }}>{p.domain}</span>
-                  </button>
-                ))}
-              </div>
-              <div className="dropdown-divider" />
-              <button
-                className="dropdown-item"
-                onClick={() => navigate('/projects')}
-                style={{ color: 'var(--primary)', fontWeight: 600 }}
-              >
-                <Plus size={14} />
-                <span>Create & Manage Projects</span>
-              </button>
-            </Dropdown>
-
             {/* Global Ctrl+K Search Bar */}
             <div
               className="hdr-search"
@@ -547,7 +470,7 @@ export default function Layout({ children }) {
               <input
                 type="text"
                 readOnly
-                placeholder="Search LinkPilot..."
+                placeholder="Search domains, backlinks, exchanges..."
                 value=""
               />
               <span className="kbd-shortcut">Ctrl + K</span>
@@ -564,50 +487,6 @@ export default function Layout({ children }) {
           </div>
 
           <div className="hdr-right">
-            {/* View Mode Switcher: Agency HQ vs Client Portal */}
-            <div className="hdr-mode-switcher" style={{ display: 'inline-flex', background: 'var(--bg3)', padding: 3, borderRadius: 'var(--radius-pill)', border: '1px solid var(--border)' }}>
-              <button
-                onClick={() => navigate('/')}
-                style={{
-                  padding: '4px 10px',
-                  borderRadius: 'var(--radius-pill)',
-                  border: 'none',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: location.pathname !== '/portal' ? 'var(--bg2)' : 'transparent',
-                  color: location.pathname !== '/portal' ? 'var(--primary)' : 'var(--fg3)',
-                  boxShadow: location.pathname !== '/portal' ? 'var(--shadow-xs)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5,
-                }}
-                title="Agency HQ"
-              >
-                <LayoutDashboard size={13} /> <span className="hdr-btn-text">Agency HQ</span>
-              </button>
-              <button
-                onClick={() => navigate('/portal')}
-                style={{
-                  padding: '4px 10px',
-                  borderRadius: 'var(--radius-pill)',
-                  border: 'none',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  background: location.pathname === '/portal' ? 'var(--primary)' : 'transparent',
-                  color: location.pathname === '/portal' ? '#ffffff' : 'var(--fg3)',
-                  boxShadow: location.pathname === '/portal' ? 'var(--shadow-xs)' : 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 5,
-                }}
-                title="Client Portal"
-              >
-                <Building2 size={13} /> <span className="hdr-btn-text">Client Portal</span>
-              </button>
-            </div>
-
             {/* Quick Action Button */}
             <div className="hdr-action-btn-wrap">
               <Button
@@ -737,21 +616,10 @@ export default function Layout({ children }) {
               <HelpCircle size={18} />
             </button>
 
-            {/* Quick Theme Toggle */}
-            <button
-              className="btn btn-ghost btn-icon"
-              onClick={toggleTheme}
-              title={`Switch to ${isDark ? 'light' : 'dark'} mode`}
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-
             {/* Premium Profile Menu Popover */}
             <ProfileMenu
               user={user}
               onLogout={handleLogout}
-              isDark={isDark}
-              onToggleTheme={toggleTheme}
             />
           </div>
         </header>

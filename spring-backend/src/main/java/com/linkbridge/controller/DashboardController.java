@@ -73,7 +73,7 @@ public class DashboardController {
         );
 
         List<Map<String, Object>> teamPerformance = jdbcTemplate.queryForList(
-            "SELECT u.id, u.name, u.avatar_color, " +
+            "SELECT u.id, SPLIT_PART(u.name, ' ', 1) || CASE WHEN SPLIT_PART(u.name, ' ', 2) LIKE '%@%' OR SPLIT_PART(u.name, ' ', 2) = '' THEN '' ELSE ' ' || SPLIT_PART(u.name, ' ', 2) END AS name, u.avatar_color, " +
             "(SELECT COUNT(*) FROM domains d WHERE d.assigned_to=u.id) AS domains, " +
             "(SELECT COUNT(*) FROM our_requests o WHERE o.assigned_to=u.id) AS our_requests, " +
             "(SELECT COUNT(*) FROM client_requests c WHERE c.assigned_to=u.id) AS client_requests, " +
@@ -82,8 +82,8 @@ public class DashboardController {
             "(SELECT COUNT(*) FROM backlinks b WHERE b.assigned_to=u.id) AS backlinks, " +
             "(SELECT COUNT(*) FROM backlinks b WHERE b.assigned_to=u.id AND b.status='live') AS live, " +
             "(SELECT COUNT(*) FROM backlinks b WHERE b.assigned_to=u.id AND b.status='lost') AS lost " +
-            "FROM users u WHERE u.status='active' AND u.role IN ('executive','manager') " +
-            "ORDER BY u.name"
+            "FROM users u WHERE u.status='active' " +
+            "ORDER BY completed_exchanges DESC, live DESC, u.name"
         );
 
         List<Map<String, Object>> domainDistribution = jdbcTemplate.queryForList(

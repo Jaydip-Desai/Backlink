@@ -20,14 +20,20 @@ export async function api(path, options = {}) {
       credentials: 'include',
       body: body ? JSON.stringify(body) : undefined
     });
-    if (res.status === 401 && !noAuth) {
+    const text = await res.text();
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = {};
+    }
+    const isAuthEndpoint = path.startsWith('/auth/');
+    if (res.status === 401 && !noAuth && !isAuthEndpoint) {
       if (setAuthUser) setAuthUser(null);
       if (navigateTo) navigateTo('/login');
-      throw new Error('Session expired');
+      throw new Error(data.error || 'Session expired. Please sign in again.');
     }
-    const text = await res.text();
-    const data = text ? JSON.parse(text) : {};
-    if (!res.ok) throw { status: res.status, message: data.error || 'Request failed', data };
+    if (!res.ok) throw { status: res.status, message: data.error || (res.status === 401 ? 'Invalid email or password' : 'Request failed'), data };
     return data;
   } catch (e) {
     if (e.message === 'Session expired') throw e;
